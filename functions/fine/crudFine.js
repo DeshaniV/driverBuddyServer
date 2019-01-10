@@ -7,14 +7,14 @@ const FineTicket=require('../../models/fineTicket');
 const details={}
 
 function enterFineDetails(dNic,policeId,fineName,amount,vehicleNumber)
-{    
+{
 
    const $Vals={};
 
    function getDriver(dNic)
    {
        return new Promise(function(resolve,reject){
-   
+
            Driver.find({nic:dNic},function(error,doc){
                if(error)
                {
@@ -67,7 +67,7 @@ function enterFineDetails(dNic,policeId,fineName,amount,vehicleNumber)
         return new Promise(function(resolve,reject){
             const newfineTicket=new FineTicket({
                 vehicleNumber:vehicleNumber,
-                Amount:amount, 
+                Amount:amount,
                 fine:$Vals.fine,
                 driver:$Vals.driver,
                 police:$Vals.police,
@@ -100,11 +100,35 @@ function enterFineDetails(dNic,policeId,fineName,amount,vehicleNumber)
         $Vals.fine=doc;
         return createFineTicket(amount,vehicleNumber)
     })
-    
-    
 
+
+
+}
+
+function viewRecentFineTicket(nic,paid=false)
+{
+
+    var promise=new Promise(function(resolve,reject){
+
+        FineTicket.find({$and:[{"driver.nic":nic},{paid}]},function(error,doc){
+            if(error)
+            {
+                reject(error);
+            }
+            else
+            {
+                resolve(doc[0])
+            }
+        }).sort({timeStamp:-1});
+
+    });
+
+    return promise;
 }
 
 
 
 module.exports.enterFineDetails=enterFineDetails;
+module.exports.viewRecentFineTicket=viewRecentFineTicket;
+
+

@@ -260,4 +260,14 @@ app.post('/createFineTicket',jsonencodedParser,(req,res)=>{
 });
 
 
+app.get('/viewRecentFineTicket',jsonencodedParser,(req,res)=>{
+    fineTicket.viewRecentFineTicket(req.query.nic)
+    .then(function(doc){
+      res.send(doc);
+    })
+    .catch(function(error){
+      res.send(error);
+    })
+  })
+
 module.exports = app;
